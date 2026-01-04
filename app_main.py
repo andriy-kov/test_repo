@@ -1,12 +1,19 @@
+import click
 import dash
 import dash_mantine_components as dmc
-from dash import Input, Output, State, dash_table, dcc, html
+from dash import html
 
-app = dash.Dash(__name__, title="Проєкт Беринда [Ідентифікація мовців]")
-app.config.suppress_callback_exceptions = True
+from layouts.page_1.callbacks import register_cb_1
+from layouts.page_1.layout import layout_1
+from layouts.page_2.layout import layout_2
+from layouts.page_3.layout import layout_3
+
+app = dash.Dash(__name__, title="My project", suppress_callback_exceptions=True)
+tabs = ["Length", "Upload", "Compare"]
 
 # App layout
-app.layout = html.Div(
+app.layout = dmc.MantineProvider(
+    theme={"colorScheme": "light"},
     children=[
         html.Div(
             style={
@@ -26,39 +33,45 @@ app.layout = html.Div(
                     ],
                 ),
                 dmc.Tabs(
-                    [
+                    id="tabs",
+                    value=layout_1()[1],
+                    children=[
                         dmc.TabsList(
                             [
-                                dmc.Tab("Search", value="search"),
-                                dmc.Tab("Upload", value="upload"),
-                                dmc.Tab("Compare", value="compare"),
-                            ]
+                                dmc.TabsTab(tabs[0], value=layout_1()[1]),
+                                dmc.TabsTab(tabs[1], value=layout_2()[1]),
+                                dmc.TabsTab(tabs[2], value=layout_3()[1]),
+                            ],
                         ),
                         dmc.TabsPanel(
-                            [html.H3("Search")], value="search",
+                            layout_1()[0],
+                            value=layout_1()[1],
                         ),
                         dmc.TabsPanel(
-                            [html.H3("Upload settings")], value="upload",
+                            layout_2()[0],
+                            value=layout_2()[1],
                         ),
                         dmc.TabsPanel(
-                            [html.H3("Compare settings")], value="compare",
+                            layout_3()[0],
+                            value=layout_3()[1],
                         ),
                     ],
                 ),
             ],
         ),
     ],
-  style={"fontFamily": '"Courier New", monospace'},
 )
+
+register_cb_1(app)
+
 
 @click.command()
 @click.option("--debug", is_flag=True, default=False, help="Run in debug mode")
 @click.option("--port", default=8070, help="Port to run the server on")
 @click.option("--host", default="0.0.0.0", help="Host to run the server on")
 def run_server(debug, port, host):
+    app.run(debug=debug, port=port, host=host)
 
-  app.run(debug=debug, port=port, host=host)
 
 if __name__ == "__main__":
-    run_server()                     
-                              
+    run_server()
