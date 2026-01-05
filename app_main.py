@@ -9,7 +9,11 @@ from layouts.page_2.layout import layout_2
 from layouts.page_3.layout import layout_3
 
 app = dash.Dash(__name__, title="My project", suppress_callback_exceptions=True)
-tabs = ["Length", "Upload", "Compare"]
+tab_names = ["Length", "Upload", "Compare"]
+
+tab_1_layout, tab_1_val = layout_1()
+tab_2_layout, tab_2_val = layout_2()
+tab_3_layout, tab_3_val = layout_3()
 
 # App layout
 app.layout = dmc.MantineProvider(
@@ -34,26 +38,26 @@ app.layout = dmc.MantineProvider(
                 ),
                 dmc.Tabs(
                     id="tabs",
-                    value=layout_1()[1],
+                    value=tab_1_val,
                     children=[
                         dmc.TabsList(
                             [
-                                dmc.TabsTab(tabs[0], value=layout_1()[1]),
-                                dmc.TabsTab(tabs[1], value=layout_2()[1]),
-                                dmc.TabsTab(tabs[2], value=layout_3()[1]),
+                                dmc.TabsTab(tab_names[0], value=tab_1_val),
+                                dmc.TabsTab(tab_names[1], value=tab_2_val),
+                                dmc.TabsTab(tab_names[2], value=tab_3_val),
                             ],
                         ),
                         dmc.TabsPanel(
-                            layout_1()[0],
-                            value=layout_1()[1],
+                            tab_1_layout,
+                            value=tab_1_val,
                         ),
                         dmc.TabsPanel(
-                            layout_2()[0],
-                            value=layout_2()[1],
+                            tab_2_layout,
+                            value=tab_2_val,
                         ),
                         dmc.TabsPanel(
-                            layout_3()[0],
-                            value=layout_3()[1],
+                            tab_3_layout,
+                            value=tab_3_val,
                         ),
                     ],
                 ),
